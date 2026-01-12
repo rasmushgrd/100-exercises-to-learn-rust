@@ -1,15 +1,16 @@
 // TODO: Use two variants, one for a title error and one for a description error.
 //   Each variant should contain a string with the explanation of what went wrong exactly.
 //   You'll have to update the implementation of `Ticket::new` as well.
-enum TicketNewError {}
+enum TicketNewError {
+    TitleError { message: String },
+    DescriptionError { message: String },
+}
 
 // TODO: `easy_ticket` should panic when the title is invalid, using the error message
 //   stored inside the relevant variant of the `TicketNewError` enum.
 //   When the description is invalid, instead, it should use a default description:
 //   "Description not provided".
-fn easy_ticket(title: String, description: String, status: Status) -> Ticket {
-    todo!()
-}
+fn easy_ticket(title: String, description: String, status: Status) -> Ticket {}
 
 #[derive(Debug, PartialEq)]
 struct Ticket {
@@ -31,24 +32,25 @@ impl Ticket {
         description: String,
         status: Status,
     ) -> Result<Ticket, TicketNewError> {
-        if title.is_empty() {
-            return Err("Title cannot be empty".to_string());
+        match (title.len(), description.len()) {
+            (0, _) => Err(TicketNewError::TitleError {
+                message: "Title cannot be empty".to_string(),
+            }),
+            (_, 0) => Err(TicketNewError::DescriptionError {
+                message: "Description cannot be empty".to_string(),
+            }),
+            (51.., _) => Err(TicketNewError::TitleError {
+                message: "Title cannot be longer than 50 bytes".to_string(),
+            }),
+            (_, 501..) => Err(TicketNewError::DescriptionError {
+                message: "Description cannot be longer than 500 bytes".to_string(),
+            }),
+            (1..=500, 1..=500) => Ok(Ticket {
+                title,
+                description,
+                status,
+            }),
         }
-        if title.len() > 50 {
-            return Err("Title cannot be longer than 50 bytes".to_string());
-        }
-        if description.is_empty() {
-            return Err("Description cannot be empty".to_string());
-        }
-        if description.len() > 500 {
-            return Err("Description cannot be longer than 500 bytes".to_string());
-        }
-
-        Ok(Ticket {
-            title,
-            description,
-            status,
-        })
     }
 }
 
