@@ -38,7 +38,7 @@ pub enum Status {
 impl TicketStore {
     pub fn new() -> Self {
         Self {
-            tickets: HashMap::<TicketId, Ticket>::new(),
+            tickets: HashMap::new(),
             counter: 0,
         }
     }
