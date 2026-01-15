@@ -2,8 +2,6 @@
 //  and compute the sum of each half in a separate thread.
 //  Don't perform any heap allocation. Don't leak any memory.
 
-use std::thread;
-
 pub fn sum(v: Vec<i32>) -> i32 {
     let midpoint = v.len() / 2;
     std::thread::scope(|scope| {
